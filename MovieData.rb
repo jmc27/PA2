@@ -16,12 +16,12 @@ class MovieData
 
         #loads data from a file and sets globals
         def load_data
-                numlines = 0;
+                
                 File.open(@filename, 'r').each_line do |line|
                         line = line.split '	'
-                        numlines += 1
+
                         @moviedata[line[1].to_sym][0] += 1
-                        @moviedata[line[1].to_sym][1] = (@moviedata[line[1].to_sym][1] + line[2].to_i) / @moviedata[line[1].to_sym][0].to_f
+                        @moviedata[line[1].to_sym][1] += line[2].to_i
 
                         @userdata[line[0].to_sym].push([line[1], line[2].to_i])
                         
@@ -46,7 +46,7 @@ class MovieData
         def popularitylist
                 #returns a list of movie id's sorted and ordered by decreasing popularity
                 movie_list = @moviedata.keys
-                movie_list.sort_by{ |key| [@moviedata[key][1]] }
+                movie_list.sort_by{ |key| [@moviedata[key][1], @moviedata[key][0]] }.reverse
         end
 
         #similarity between users is determined by comparing the difference in ratings
@@ -143,14 +143,15 @@ end
 
 #test
 data = MovieData.new("ml-100k")
-#puts data.popularitylist.first(50)
+#puts data.popularitylist.first(10)
 #puts data.popularity(294)
 
 #puts data.similarity(10,100)
 
 #puts data.most_similar(100).first(5)
+puts data.rating 601, 50
 #data.movies 12
-#data.viewers 153
-data.run_test 10
+#puts data.viewers 50
+#data.run_test 10
 
 
