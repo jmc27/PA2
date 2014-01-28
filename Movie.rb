@@ -1,6 +1,6 @@
 class Movie
+	attr_accessor :movies
 	def initialize
-		attr_accessor :movies
 		@movies = Hash.new { |hash, key| hash[key] = [0, 0]}
 	end
 	#takes a line as a parameter and splits it and inputs it into the hash
