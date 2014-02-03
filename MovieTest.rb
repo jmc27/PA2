@@ -1,12 +1,13 @@
 
 class MovieTest
-	attr_accessor :meanerror, :moviedata, :stddev, :avg
+	attr_accessor :meanerror, :moviedata, :stddev, :avg, :rmsd
 	#initialize training data set 
 	def initialize data
 		@moviedata = data
 		@avg = avg_rating
 		@meanerror = mean
 		@stddev = stddev
+		@rms = rmsd
 	end
 	#returns the average predication error 
 	def mean
@@ -34,9 +35,13 @@ class MovieTest
 		end
 		return avg / @moviedata.size.to_f
 	end
-	#returns the root mean square error of the prediction
+	#returns the root mean square error of a prediction
 	def rms actual, prediction
 		return Math.sqrt((actual - prediction) ** 2)
+	end
+	#returns the root mean square deviation
+	def rmsd
+		return Math.sqrt(@meanerror)
 	end
 	#returns an array of the predictions in the form [u,m,r,p]. 
 	#You can also generate other types of error measures if you want, 

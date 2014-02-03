@@ -135,8 +135,12 @@ class MovieData
         #run_test method without k parameter so it only works
         # on the full file test and training files
         def run_test 
+            start = Time.now
             test_table = make_test_table("ml-100k/u1.test")
             @testdata = MovieTest.new(test_table)
+            finish = Time.now
+            puts "Time: "
+            puts finish - start
         end
         #make table of results for run_test
         def make_test_table path
