@@ -5,25 +5,23 @@
 
 require_relative 'MovieTest'
 class MovieData
-        attr_accessor :filename, :moviedata, :userdata
+        attr_accessor :moviedata, :userdata, :testdata
         def initialize(path)
-        	@filename = path + '/u.data'
             @moviedata = Hash.new { |hash, key| hash[key] = [0, 0]}
             @userdata = Hash.new { |hash, key| hash[key] = []}
            
-            load_data
+            load_data path
         end
 
         #loads data from a file and sets globals
-        def load_data
-                
-                File.open(@filename, 'r').each_line do |line|
-                        line = line.split '	'
+        def load_data(filename)
+            File.open(filename, 'r').each_line do |line|
+                    line = line.split '	'
 
-                        @moviedata[line[1].to_sym][0] += 1
-                        @moviedata[line[1].to_sym][1] += line[2].to_i
+                    @moviedata[line[1].to_sym][0] += 1
+                    @moviedata[line[1].to_sym][1] += line[2].to_i
 
-                        @userdata[line[0].to_sym].push([line[1], line[2].to_i])
+                    @userdata[line[0].to_sym].push([line[1], line[2].to_i])
                         
                 end
                 #puts numlines
@@ -92,9 +90,9 @@ class MovieData
         def predict u, m
         	if rating(u, m) == 0
         		#puts avg_rating 
-        		return avg_rating
+        		return avg_rating u
         	else
-        		puts rating u, m
+        		#puts rating u, m
         		return rating u, m
         	end
         end
@@ -132,26 +130,25 @@ class MovieData
         		end
 
         	end
-        	puts movie_viewers
+        	return movie_viewers
         end
-
-        def run_test k
-        	puts MovieTest.new @filename, k
+        #run_test method without k parameter so it only works
+        # on the full file test and training files
+        def run_test 
+            test_table = make_test_table("ml-100k/u1.test")
+            @testdata = MovieTest.new(test_table)
+        end
+        #make table of results for run_test
+        def make_test_table path
+            testdata = MovieData.new(path)
+            users = testdata.userdata.keys
+            test_table = []
+            users.each do |key|
+                testdata.userdata[key.to_s.to_sym].each do |id, actualrating|
+                    test_table.push([key, id, actualrating, predict(key, id)])
+                end
+            end
+            return test_table
         end
 end
-
-
-#test
-data = MovieData.new("ml-100k")
-#puts data.popularitylist.first(10)
-#puts data.popularity(294)
-
-#puts data.similarity(10,100)
-
-#puts data.most_similar(100).first(5)
-puts data.rating 601, 50
-#data.movies 12
-#puts data.viewers 50
-#data.run_test 10
-
 
